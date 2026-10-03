@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spinner Game - Team Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- SETUP PAGE -->
+    <div id="setupPage" class="page active">
+        <div class="setup-container">
+            <h1 class="setup-title">🎡 SPINNER GAME</h1>
+            <p class="setup-subtitle">Setup Your Game</p>
+            
+            <!-- Game Mode Selection -->
+            <div class="mode-selection">
+                <h2>Select Game Mode</h2>
+                <div class="mode-buttons">
+                    <button class="mode-btn" onclick="selectMode('individual')">
+                        <span class="mode-icon">👤</span>
+                        <span class="mode-name">Individual Game</span>
+                        <span class="mode-desc">Custom names for individuals</span>
+                    </button>
+                    <button class="mode-btn" onclick="selectMode('spinner')">
+                        <span class="mode-icon">🎯</span>
+                        <span class="mode-name">Spinner Game</span>
+                        <span class="mode-desc">Spin to win</span>
+                    </button>
+                    <button class="mode-btn" onclick="selectMode('truthdare')">
+                        <span class="mode-icon">🎭</span>
+                        <span class="mode-name">Truth or Dare</span>
+                        <span class="mode-desc">Choose truth or dare</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="gameName">Game Name (to save):</label>
+                    <input type="text" id="gameName" placeholder="Enter game name" value="Game 1">
+                </div>
+
+                <div class="input-group">
+                    <label for="teamCount">Number of Teams:</label>
+                    <input type="number" id="teamCount" min="2" max="10" value="2" placeholder="Enter number of teams">
+                </div>
+
+                <div class="input-group">
+                    <label for="memberCount">Members per Team:</label>
+                    <input type="number" id="memberCount" min="1" max="20" value="3" placeholder="Enter members per team">
+                </div>
+
+                <button class="btn-proceed" onclick="proceedToTeamSetup()">Proceed to Team Setup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEAM SETUP PAGE -->
+    <div id="teamSetupPage" class="page">
+        <div class="team-setup-container">
+            <h1 class="setup-title">🎯 Team Names Setup</h1>
+            <p class="setup-subtitle">Enter team names</p>
+            
+            <div id="teamInputsContainer" class="team-inputs-container"></div>
+            
+            <div class="setup-buttons">
+                <button class="btn-back" onclick="goBack()">← Back</button>
+                <button class="btn-next" onclick="proceedToMemberSetup()">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMBER SETUP PAGE -->
+    <div id="memberSetupPage" class="page">
+        <div class="member-setup-container">
+            <h1 class="setup-title">👥 Member Names Setup</h1>
+            <p class="setup-subtitle">Enter member names for each team</p>
+            
+            <div id="memberInputsContainer" class="member-inputs-container"></div>
+            
+            <div class="setup-buttons">
+                <button class="btn-back" onclick="goBack()">← Back</button>
+                <button class="btn-start" onclick="startGame()">Start Game →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRUTH OR DARE SETUP PAGE -->
+    <div id="truthDareSetupPage" class="page">
+        <div class="member-setup-container">
+            <h1 class="setup-title">🎭 Truth or Dare Setup</h1>
+            <p class="setup-subtitle">Enter player names</p>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="playerCount">Number of Players:</label>
+                    <input type="number" id="playerCount" min="2" max="20" value="2" placeholder="Enter number of players">
+                </div>
+            </div>
+            
+            <div id="truthDareInputsContainer" class="member-inputs-container"></div>
+            
+            <div class="setup-buttons">
+                <button class="btn-back" onclick="goBack()">← Back</button>
+                <button class="btn-start" onclick="startTruthDareGame()">Start Game →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME PAGE -->
+    <div id="gamePage" class="page">
+        <div class="game-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Teams</h2>
+                </div>
+                <div id="teamsList" class="teams-list"></div>
+                
+                <!-- Winner Database -->
+                <div class="winner-database">
+                    <div class="database-header">
+                        <h3>📊 Winners</h3>
+                    </div>
+                    <div id="winnersList" class="winners-list"></div>
+                </div>
+
+                <!-- Save/Load Buttons -->
+                <div class="game-controls">
+                    <button class="btn-save" onclick="saveGame()">💾 Save Game</button>
+                    <button class="btn-load" onclick="loadSavedGames()">📂 Load Game</button>
+                </div>
+                
+                <button class="btn-reset" onclick="resetGame()">⟲ Reset Game</button>
+            </aside>
+
+            <!-- Main Game Area -->
+            <main class="game-area">
+                <div class="game-header">
+                    <div class="game-title-section">
+                        <h2 id="gameNameDisplay" class="game-name"></h2>
+                        <h1 id="currentTeamTitle">Team 1</h1>
+                    </div>
+                    <div class="game-info">
+                        <span id="modeDisplay" class="mode-badge">Individual Game</span>
+                    </div>
+                </div>
+
+                <!-- Spinner Container -->
+                <div class="spinner-container">
+                    <div class="spinner-wrapper">
+                        <div id="spinner" class="spinner">
+                            <div id="spinnerOptions" class="spinner-options"></div>
+                        </div>
+                        <div class="spinner-pointer"></div>
+                    </div>
+                </div>
+
+                <!-- Spin Button -->
+                <button id="spinButton" class="spin-button" onclick="spinWheel()">
+                    <span class="spin-text">SPIN</span>
+                </button>
+
+                <!-- Result Display -->
+                <div id="resultDisplay" class="result-display hidden">
+                    <div class="result-content">
+                        <p class="result-label">🎉 Winner 🎉</p>
+                        <p id="winnerName" class="result-winner">Loading...</p>
+                        <button class="btn-next-turn" onclick="nextTurn()">Next Turn →</button>
+                    </div>
+                </div>
+
+                <!-- Truth or Dare Display -->
+                <div id="truthDareDisplay" class="truth-dare-display hidden">
+                    <div class="truth-dare-content">
+                        <p id="currentPlayerDisplay" class="current-player"></p>
+                        
+                        <!-- Spinner Section for Truth/Dare -->
+                        <div class="truth-dare-spinner-section">
+                            <p class="spinner-instruction">Spin to see whose turn it is!</p>
+                            <div class="truth-dare-spinner-container">
+                                <div class="truth-dare-spinner-wrapper">
+                                    <div id="truthDareSpinner" class="truth-dare-spinner">
+                                        <div id="truthDareSpinnerOptions" class="truth-dare-spinner-options"></div>
+                                    </div>
+                                    <div class="spinner-pointer"></div>
+                                </div>
+                            </div>
+                            <button class="btn-spin-player" onclick="spinForTruthDarePlayer()">SPIN for Next Player</button>
+                        </div>
+                        
+                        <!-- Choice Buttons (Hidden initially) -->
+                        <div class="truth-dare-buttons hidden">
+                            <button class="btn-truth" onclick="selectTruthOrDare('truth')">
+                                <span>✨ Truth</span>
+                            </button>
+                            <button class="btn-dare" onclick="selectTruthOrDare('dare')">
+                                <span>🔥 Dare</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Task Result (Hidden initially) -->
+                        <div id="truthDareResult" class="truth-dare-result hidden">
+                            <p id="taskDisplay" class="task-display"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Stats -->
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Current Team</span>
+                        <span id="currentTeamName" class="stat-value">Team 1</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Spins</span>
+                        <span id="spinCount" class="stat-value">0</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- LOAD GAME MODAL -->
+    <div id="loadGameModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📂 Load Saved Game</h2>
+                <button class="modal-close" onclick="closeLoadModal()">✕</button>
+            </div>
+            <div id="savedGamesList" class="saved-games-list"></div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeLoadModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
